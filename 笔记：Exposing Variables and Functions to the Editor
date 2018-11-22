@@ -1,0 +1,36 @@
+目标：把变量和方程暴露给编辑器
+
+  macro: 宏
+
+1. 关键词：UPROPERTY()
+
+把UPROOERTY()加在被影响变量前，eg:
+  UPROPERTY()
+  int32 CountdownTime;
+使引擎在启动游戏或加载已存关卡时保存（preserve）该变量。
+
+UPROPERTY支持 改变UE使用变量的方式 的参数（arguments）
+要使该变量可编辑，在括号中加上 EditAnywhere：
+  Uproperty(EditAnywhere)
+  int32 CountdownTime; 
+  //（compile 后在编辑器detail栏的表现类似【UNITY中加了public的变量】）
+另：在c++文件中给variable加上comment，comment会变成编辑器中该变量的描述（光标划过时浮现）。
+
+
+2. 关键词：UFUNCTION()
+
+eg：
+UFUNCTION()
+void CountydownHasFinished();
+
+  a. BlueprintCallable functions: 用C++写的可以在Blueprint graph（蓝图）中调用的方程。这种方程不应该被改变，例如各种数学方程。
+  b. BlueprintImplementableEvent functions：有c++头文件，但方程主体在蓝图中完成。让不写代码的人可以在蓝图中自定义对于不需要默认或标准表现的特定情况的反应。
+  c. BlueprintNativeEvent functions：类似上面两个的结合。方程有在C++文件中编好的默认表现，也可以通过在蓝图中override添加或替代方程的表现。编程时，该方程通常被写为一个在名字末尾添加_implementation的虚函数（virtual function）。
+    eg：
+    in .h:
+      UFUNCTION(BlueprintNativeEvent)
+      void CountdownFinished();
+      virtual void CountdownHasFinished_Implementation();
+    in .cpp
+    change void CountdownFinished() to virtual void CountdownHasFinished_Implementation()
+    
